@@ -5,8 +5,6 @@ WORKDIR /app
 
 COPY . /app
 
-#CMD [ "bash" ]
-
 # Кэш слоёв зависимостей (важно!)
 RUN ./gradlew dependencies --no-daemon
 
@@ -23,5 +21,3 @@ COPY --from=builder /app/build/libs/*.jar app.jar
 EXPOSE 8091
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
-

@@ -55,7 +55,7 @@ dependencies {
 
 openApiGenerate {
     generatorName.set("java")
-    inputSpec.set("$rootDir/individuals-api/openapi/individuals-api.yaml")
+    inputSpec.set("openapi/individuals-api.yaml")
     outputDir.set("$buildDir/generated-sources/openapi")
     apiPackage.set("com.grishin.api")
     modelPackage.set("com.grishin.dto")
