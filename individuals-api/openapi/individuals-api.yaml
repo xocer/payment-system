@@ -118,13 +118,22 @@ components:
     UserRegistrationRequest:
       type: object
       required:
+        - username
         - email
+        - firstName
+        - lastName
         - password
         - confirm_password
       properties:
+        username:
+          type: string
         email:
           type: string
           format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
         password:
           type: string
         confirm_password:
@@ -155,6 +164,7 @@ components:
       properties:
         access_token:
           type: string
+          nullable: false
         refresh_token:
           type: string
         expires_in:
@@ -185,3 +195,12 @@ components:
           type: string
         status:
           type: integer
+
+    TokenInfo:
+      type: object
+      properties:
+        token:
+          type: string
+        expirationTime:
+          type: integer
+          format: int64

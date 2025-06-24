@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
@@ -34,6 +34,10 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
     compileOnly("org.projectlombok:lombok:1.18.38")
     annotationProcessor("org.projectlombok:lombok:1.18.38")
@@ -55,12 +59,17 @@ dependencies {
 
 openApiGenerate {
     generatorName.set("java")
+//    inputSpec.set("$rootDir/individuals-api/openapi/individuals-api.yaml")
     inputSpec.set("openapi/individuals-api.yaml")
     outputDir.set("$buildDir/generated-sources/openapi")
     apiPackage.set("com.grishin.api")
     modelPackage.set("com.grishin.dto")
     configOptions.set(mapOf(
-        "useJakartaEe" to "true"
+        "useJakartaEe" to "true",
+        "library" to "webclient",
+        "serializationLibrary" to "jackson",
+        "nullableReferenceTypes" to "false",
+        "jakartaNullable" to "false"
     ))
 }
 

@@ -1,30 +1,105 @@
-//package com.grishin.individuals.api.client;
-//
-//import com.grishin.dto.UserRegistrationRequest;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Component;
-//import org.springframework.web.reactive.function.client.WebClient;
-//import reactor.core.publisher.Mono;
-//
-//@Component
-//public class KeycloakClient {
-//    WebClient webClient = WebClient.create("http://localhost:9090/admin/realms/payment-system/users");
-////    @Value("${keycloak.admin.token}")
-////    private String adminToken;
-////
-////    @Value("${keycloak.url}")
-////    private String keycloakUrl;
-////
-////    @Value("${keycloak.realm}")
-////    private String realm;
-//
-//    public Mono<Void> registerUser(UserRegistrationRequest request) {
-//        var authorization = webClient.post()
-//                .header("Authorization", "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUeW9meDl4Y21DZzZuam93elFUZkd1b0FPNjJJWUQ1b19MTmRVWG9ySWI4In0.eyJleHAiOjE3NTAwOTExOTQsImlhdCI6MTc1MDA5MDg5NCwianRpIjoidHJydGNjOjNkMzNmYTM0LTJhMDgtNGUwNy1iMzFmLTQzNzg1ZTc1MWEzYSIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTA5MC9yZWFsbXMvcGF5bWVudC1zeXN0ZW0iLCJhdWQiOlsicmVhbG0tbWFuYWdlbWVudCIsImFjY291bnQiXSwic3ViIjoiZTJmNDMwODEtNmRkMy00YmRjLTlkNmMtZGE0NTFiZDhlYzFjIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaW5kaXZpZHVhbHMtYXBpIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjgwOTEiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtcGF5bWVudC1zeXN0ZW0iLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiaW5kaXZpZHVhbHMtYXBpIjp7InJvbGVzIjpbInVtYV9wcm90ZWN0aW9uIl19LCJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbIm1hbmFnZS11c2VycyIsInZpZXctdXNlcnMiLCJxdWVyeS1ncm91cHMiLCJxdWVyeS11c2VycyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY2xpZW50SG9zdCI6IjE5Mi4xNjguNjUuMSIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC1pbmRpdmlkdWFscy1hcGkiLCJjbGllbnRBZGRyZXNzIjoiMTkyLjE2OC42NS4xIiwiY2xpZW50X2lkIjoiaW5kaXZpZHVhbHMtYXBpIn0.Td5Ve3Cx12UCtbNv3XfUJXhqWfhYFVHYfCWJDCjLedmbpm4yvpxk_J180nSW7eYkEvaH8OyNmDEmKgbWBW2spFIAUWehB0-NkY9ZovHEbs9Xxv1ulIBK7GOR4Mq2C_J3uK_3CuCx2yoO2N9ebfiWni9m-rET85H1FQSAvFr9s9yl8tZ_HeXRG1JJIJadr8U36M_MgxQPOS2ymdCe8E2jn5AIMrgNFWeHBh7wsGXhdFx0mnSdKrX6kx5puCvUa9oeWl1dtzWlkeHpao6dorhp5Hxhnod9WEFrrxu8ryYem1z1CddiDnUahCh-_grWIIbklgrG9f1T1CLJdl-g6fokjQ")
-//                .bodyValue(request)
-//                .retrieve()
-//                .bodyToMono(Void.class);
-//        return authorization;
-//    }
-//
-//}
+package com.grishin.individuals.api.client;
+
+import com.grishin.dto.TokenRefreshRequest;
+import com.grishin.dto.TokenResponse;
+import com.grishin.dto.UserLoginRequest;
+import com.grishin.dto.UserRegistrationRequest;
+import com.grishin.individuals.api.common.KeycloakRequestParam;
+import com.grishin.individuals.api.dto.UserInfoKeycloakResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Map;
+
+@Component
+public class KeycloakClient {
+    WebClient webClient = WebClient.create();
+
+    public Mono<Void> registerUser(UserRegistrationRequest request, String token) {
+        Map<String, Object> body = Map.of(
+                KeycloakRequestParam.USERNAME.getKey(), request.getUsername(),
+                KeycloakRequestParam.EMAIL.getKey(), request.getEmail(),
+                KeycloakRequestParam.FIRST_NAME.getKey(), request.getFirstName(),
+                KeycloakRequestParam.LAST_NAME.getKey(), request.getLastName(),
+                KeycloakRequestParam.IS_ACCOUNT_ENABLED.getKey(), true,
+                KeycloakRequestParam.IS_EMAIL_VERIFIED.getKey(), true,
+                KeycloakRequestParam.CREDENTIALS.getKey(), List.of(
+                        Map.of(
+                                KeycloakRequestParam.CREDENTIAL_TYPE.getKey(), "password",
+                                KeycloakRequestParam.CREDENTIALS_VALUE.getKey(), request.getPassword(),
+                                KeycloakRequestParam.IS_CREDENTIAL_TEMPORARY.getKey(), false
+                        )
+                )
+        );
+        return webClient.post()
+                .uri("http://localhost:9090/admin/realms/payment-system/users")
+                .header("Authorization", "Bearer " + token)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(Void.class);
+    }
+
+    public Mono<String> getClientToken() {
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add(KeycloakRequestParam.CLIENT_ID.getKey(), "individuals-api");
+        formData.add(KeycloakRequestParam.CLIENT_SECRET.getKey(), "dLBKPjDAyC5Zmg4N8EgStfQhWFYZQQi7");
+        formData.add(KeycloakRequestParam.GRANT_TYPE.getKey(), "client_credentials");
+
+        return webClient.post()
+                .uri("http://localhost:9090/realms/payment-system/protocol/openid-connect/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
+                .retrieve()
+                .bodyToMono(TokenResponse.class)
+                .mapNotNull(TokenResponse::getAccessToken);
+    }
+
+    public Mono<ResponseEntity<?>> login(UserLoginRequest request) {
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add(KeycloakRequestParam.CLIENT_ID.getKey(), "individuals-api");
+        formData.add(KeycloakRequestParam.CLIENT_SECRET.getKey(), "dLBKPjDAyC5Zmg4N8EgStfQhWFYZQQi7");
+        formData.add(KeycloakRequestParam.USERNAME.getKey(), request.getEmail());
+        formData.add(KeycloakRequestParam.PASSWORD.getKey(), request.getPassword());
+        formData.add(KeycloakRequestParam.GRANT_TYPE.getKey(), "password");
+
+        return webClient.post()
+                .uri("http://localhost:9090/realms/payment-system/protocol/openid-connect/token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromFormData(formData))
+                .retrieve()
+                .bodyToMono(TokenResponse.class)
+                .map(ResponseEntity::ok);
+    }
+
+    public Mono<ResponseEntity<?>> refreshToken(TokenRefreshRequest request) {
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add(KeycloakRequestParam.CLIENT_ID.getKey(), "individuals-api");
+        formData.add(KeycloakRequestParam.CLIENT_SECRET.getKey(), "dLBKPjDAyC5Zmg4N8EgStfQhWFYZQQi7");
+        formData.add(KeycloakRequestParam.REFRESH_TOKEN.getKey(), request.getRefreshToken());
+        formData.add(KeycloakRequestParam.GRANT_TYPE.getKey(), "refresh_token");
+
+        return webClient.post()
+                .uri("http://localhost:9090/realms/payment-system/protocol/openid-connect/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
+                .retrieve()
+                .bodyToMono(TokenResponse.class)
+                .map(ResponseEntity::ok);
+    }
+
+    public Mono<UserInfoKeycloakResponse> getUserInfo(String token) {
+        return webClient.get()
+                .uri("http://localhost:9090/realms/payment-system/protocol/openid-connect/userinfo")
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .retrieve()
+                .bodyToMono(UserInfoKeycloakResponse.class);
+    }
+}
