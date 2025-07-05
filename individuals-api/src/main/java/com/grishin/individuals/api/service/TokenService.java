@@ -38,12 +38,18 @@ public class TokenService {
     }
 
     public List<String> getRoles(Claims claims) {
-        Map<String, Object> realmAccess = claims.get("realm_access", Map.class);
-        List<String> realmRoles = realmAccess != null
-                ? (List<String>) realmAccess.get("roles")
-                : List.of();
+        Map<String, Object> resourceAccess = (Map<String, Object>) claims.get("resource_access", Map.class);
+        if (resourceAccess == null) {
+            return List.of();
+        }
 
-        return realmRoles;
+        Map<String, Object> account = (Map<String, Object>) resourceAccess.get("account");
+        if (account == null) {
+            return List.of();
+        }
+
+        List<String> roles = (List<String>) account.get("roles");
+        return roles != null ? roles : List.of();
     }
 
     public Claims getClaims(String token) {

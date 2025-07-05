@@ -21,13 +21,13 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-//    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.okio:okio:3.12.0")
     implementation("io.gsonfire:gson-fire:1.8.5")
-    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+    implementation("io.micrometer:micrometer-registry-prometheus")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("io.projectreactor:reactor-test")
@@ -59,8 +59,8 @@ dependencies {
 
 openApiGenerate {
     generatorName.set("java")
-//    inputSpec.set("$rootDir/individuals-api/openapi/individuals-api.yaml")
-    inputSpec.set("openapi/individuals-api.yaml")
+    inputSpec.set("$rootDir/individuals-api/openapi/individuals-api.yaml")
+//    inputSpec.set("openapi/individuals-api.yaml")
     outputDir.set("$buildDir/generated-sources/openapi")
     apiPackage.set("com.grishin.api")
     modelPackage.set("com.grishin.dto")
