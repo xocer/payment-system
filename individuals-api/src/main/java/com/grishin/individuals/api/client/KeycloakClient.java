@@ -28,31 +28,6 @@ public class KeycloakClient {
     private final KeycloakProperties props;
     private final WebClient webClient = WebClient.create();
 
-    @PostConstruct
-    public void printProps() {
-        System.out.println("👀 Grant type: " + props.getCredentialType().getClientCredentials());
-        System.out.println("clientId: " + props.getClientId());
-        System.out.println("Client secret: " + props.getClientSecret());
-        System.out.println("Client secret length: " + props.getClientSecret().length());
-        System.out.println("Client secret length: " + "6Yh4GuJpOJeCMfAMYGFVjksElXKwpM3y".length());
-
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add(KeycloakRequestParam.CLIENT_ID.getKey(), props.getClientId());
-        formData.add(KeycloakRequestParam.CLIENT_SECRET.getKey(), props.getClientSecret());
-        formData.add(KeycloakRequestParam.GRANT_TYPE.getKey(), props.getCredentialType().getClientCredentials());
-
-        MultiValueMap<String, String> formData2 = new LinkedMultiValueMap<>();
-        formData2.add(KeycloakRequestParam.CLIENT_ID.getKey(), "individuals-api");
-        formData2.add(KeycloakRequestParam.CLIENT_SECRET.getKey(), "6Yh4GuJpOJeCMfAMYGFVjksElXKwpM3y");
-        formData2.add(KeycloakRequestParam.GRANT_TYPE.getKey(), "client_credentials");
-
-        formData.forEach((s, strings) -> System.out.println(s + ": " + strings));
-        System.out.println();
-        formData2.forEach((s, strings) -> System.out.println(s + ": " + strings));
-
-        System.out.println(BodyInserters.fromFormData(formData));
-    }
-
     public Mono<Void> registerUser(UserRegistrationRequest request, String token) {
         Map<String, Object> body = Map.of(
                 KeycloakRequestParam.USERNAME.getKey(), request.getUsername(),

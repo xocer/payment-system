@@ -40,15 +40,6 @@ services:
     build:
       context: ./individuals-api
     container_name: individuals-api
-    environment:
-      - KEYCLOAK_BASEURL=http://keycloak:8980
-      - KEYCLOAK_REALM=payment-system
-      - KEYCLOAK_CLIENTID=individuals-api
-      - KEYCLOAK_CLIENTSECRET=6Yh4GuJpOJeCMfAMYGFVjksElXKwpM3y
-      - KEYCLOAK_CREDENTIALTYPE_PASSWORD=password
-      - KEYCLOAK_CREDENTIALTYPE_CLIENTCREDENTIALS=client_credentials
-      - KEYCLOAK_CREDENTIALTYPE_REFRESHTOKEN=refresh_token
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
     depends_on:
       - keycloak
     ports:

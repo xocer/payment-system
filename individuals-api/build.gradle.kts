@@ -33,6 +33,8 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("com.github.dasniko:testcontainers-keycloak:3.7.0")
+    testImplementation("org.testcontainers:postgresql:1.21.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
@@ -45,15 +47,10 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.38")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
 
-    //spring
-    // https://mvnrepository.com/artifact/org.openapitools/jackson-databind-nullable
     implementation("org.openapitools:jackson-databind-nullable:0.2.6")
-    // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
-    // https://mvnrepository.com/artifact/io.swagger/swagger-annotations
     implementation("io.swagger:swagger-annotations:1.6.16")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-// https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 }
 
