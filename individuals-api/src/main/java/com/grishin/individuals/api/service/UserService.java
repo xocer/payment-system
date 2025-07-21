@@ -17,8 +17,8 @@ public class UserService {
 
     public Mono<ResponseEntity<?>> register(UserRegistrationRequest request) {
         return tokenService.getClientToken()
-                .flatMap(token -> keycloakClient.registerUser(request, token)
-                        .thenReturn(ResponseEntity.ok().build()));
+                .flatMap(token -> keycloakClient.registerUser(request, token))
+                .then(Mono.defer(() -> tokenService.getTokenResponse(request.getEmail(), request.getPassword())));
     }
 
     public Mono<ResponseEntity<?>> login(UserLoginRequest request) {

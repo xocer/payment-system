@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -36,10 +37,15 @@ class UserServiceTest {
     @DisplayName("Test user registration")
     void givenUserRegistration_whenUserRegistration_thenRegisterUserIsCalledOnce() {
         //given
-        var userRegistrationRequest = new UserRegistrationRequest();
+        var userRegistrationRequest = new UserRegistrationRequest()
+                .email("test_mail@mail.com")
+                .password("test_password");
         var mockedToken = "mocked-token";
+        var mockTokenResponse = new TokenResponse().accessToken("access-token").refreshToken("refresh-token");
         BDDMockito.given(tokenService.getClientToken())
                 .willReturn(Mono.just(mockedToken));
+        BDDMockito.given(tokenService.getTokenResponse(any(String.class), any(String.class)))
+                .willReturn(Mono.just(ResponseEntity.ok(mockTokenResponse)));
         BDDMockito.given(keycloakClient.registerUser(userRegistrationRequest, mockedToken))
                 .willReturn(Mono.empty());
 

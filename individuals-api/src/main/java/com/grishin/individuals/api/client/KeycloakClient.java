@@ -7,7 +7,6 @@ import com.grishin.dto.UserRegistrationRequest;
 import com.grishin.individuals.api.common.KeycloakRequestParam;
 import com.grishin.individuals.api.config.KeycloakProperties;
 import com.grishin.individuals.api.dto.UserInfoKeycloakResponse;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

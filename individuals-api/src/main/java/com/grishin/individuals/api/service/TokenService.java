@@ -2,6 +2,7 @@ package com.grishin.individuals.api.service;
 
 import com.grishin.dto.TokenInfo;
 import com.grishin.dto.TokenRefreshRequest;
+import com.grishin.dto.UserLoginRequest;
 import com.grishin.individuals.api.client.KeycloakClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -57,6 +58,10 @@ public class TokenService {
                 .build()
                 .parseClaimsJwt(extractUnsignedJwt(token))
                 .getBody();
+    }
+
+    public Mono<ResponseEntity<?>> getTokenResponse(String email, String password) {
+        return keycloakClient.login(new UserLoginRequest().email(email).password(password));
     }
 
     private boolean isTokenExpired(TokenInfo token) {

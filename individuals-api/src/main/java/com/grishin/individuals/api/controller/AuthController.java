@@ -15,25 +15,21 @@ public class AuthController {
     private final TokenService tokenService;
     private final UserService userService;
 
-    // Регистрация пользователя
     @PostMapping("/register")
     public Mono<ResponseEntity<?>>  register(@RequestBody UserRegistrationRequest request) {
         return userService.register(request);
     }
 
-    // Аутентификация пользователя
     @PostMapping("/login")
     public Mono<ResponseEntity<?>> login(@RequestBody UserLoginRequest request) {
         return userService.login(request);
     }
 
-//    // Обновление токена доступа
     @PostMapping("/refresh-token")
     public Mono<ResponseEntity<?>> refresh(@RequestBody TokenRefreshRequest request) {
         return tokenService.refreshToken(request);
     }
-//
-    // Получение данных текущего пользователя
+
     @GetMapping("/me")
     public Mono<ResponseEntity<?>> getUserInfo(@RequestHeader("Authorization") String token) {
         return userService.getUserInfo(token);
