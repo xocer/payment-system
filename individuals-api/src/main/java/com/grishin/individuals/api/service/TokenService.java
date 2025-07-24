@@ -35,7 +35,8 @@ public class TokenService {
     }
 
     public Mono<ResponseEntity<?>> refreshToken(TokenRefreshRequest request) {
-        return keycloakClient.refreshToken(request);
+        return keycloakClient.refreshToken(request)
+                .onErrorMap(_ -> new InvalidRefreshTokenException("Недействительный или просроченный refresh token"));
     }
 
     public List<String> getRoles(Claims claims) {

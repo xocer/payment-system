@@ -18,11 +18,13 @@ public class UserService {
     public Mono<ResponseEntity<?>> register(UserRegistrationRequest request) {
         return tokenService.getClientToken()
                 .flatMap(token -> keycloakClient.registerUser(request, token))
+                .onErrorMap(_ -> new UserAlreadyExistsException("Пользователь уже существует"))
                 .then(Mono.defer(() -> tokenService.getTokenResponse(request.getEmail(), request.getPassword())));
     }
 
     public Mono<ResponseEntity<?>> login(UserLoginRequest request) {
-        return keycloakClient.login(request);
+        return keycloakClient.login(request)
+                .onErrorMap(_ -> new InvalidCredentialsException("Неверный логин или пароль"));
     }
 
     public Mono<ResponseEntity<?>> getUserInfo(String token) {
