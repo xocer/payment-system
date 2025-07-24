@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.context.ImportTestcontainers;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -70,6 +71,36 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Test register duplicate functionality")
+    void givenUserRegistrationRequest_whenRegisterSameUserTwice_thenError() {
+        //given
+        var request = new UserRegistrationRequest()
+                .username("ivanov@mail.com")
+                .email("ivanov@mail.com")
+                .firstName("Vasia")
+                .lastName("Ivanov")
+                .password("mypassword");
+
+        //when
+        webTestClient.post()
+                .uri("http://localhost:" + port + "/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange();
+        var response = webTestClient.post()
+                .uri("http://localhost:" + port + "/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange();
+
+        //then
+        response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
+                .expectBody()
+                .jsonPath("$.error").isEqualTo("Пользователь уже существует")
+                .jsonPath("$.status").isEqualTo(409);
+    }
+
+    @Test
     @DisplayName("Test login functionality")
     void givenUserLoginRequest_whenLogin_thenSuccess() {
         //given
@@ -121,6 +152,41 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Test login with mistake in credentials functionality")
+    void givenUserLoginRequest_whenLoginDataIncorrect_thenError() {
+        //given
+        var registrationRequest = new UserRegistrationRequest()
+                .username("pushkin@mail.com")
+                .email("pushkin@mail.com")
+                .firstName("Petr")
+                .lastName("Pushkin")
+                .password("mypassword");
+
+        webTestClient.post()
+                .uri("http://localhost:" + port + "/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(registrationRequest)
+                .exchange();
+
+        var userLoginRequest = new UserLoginRequest()
+                .email(registrationRequest.getEmail())
+                .password("fail password");
+
+        // when
+        var loginResponse = webTestClient.post()
+                .uri("http://localhost:" + port + "/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(userLoginRequest)
+                .exchange();
+
+        // then
+        loginResponse.expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED)
+                .expectBody()
+                .jsonPath("$.error").isEqualTo("Неверный логин или пароль")
+                .jsonPath("$.status").isEqualTo(401);
+    }
+
+    @Test
     @DisplayName("Test refresh token functionality")
     void givenRefreshToken_whenRefreshToken_thenGetNewToken() {
         // given
@@ -160,6 +226,26 @@ class AuthControllerTest {
                     assertThat(token.getRefreshToken()).isNotBlank();
                     assertThat(token.getRefreshToken()).isNotEqualTo(tokenResponse.getRefreshToken());
                 });
+    }
+
+    @Test
+    @DisplayName("Test invalid refresh token functionality")
+    void givenRefreshToken_whenRefreshTokenInvalid_thenError() {
+        // given
+        String invalidRefreshToken = "invalid";
+
+        //when
+        var refreshTokenResult = webTestClient.post()
+                .uri("http://localhost:" + port + "/v1/auth/refresh-token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new TokenRefreshRequest().refreshToken(invalidRefreshToken))
+                .exchange();
+
+        //then
+        refreshTokenResult.expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED)
+                .expectBody()
+                .jsonPath("$.error").isEqualTo("Недействительный или просроченный refresh token")
+                .jsonPath("$.status").isEqualTo(401);
     }
 
     @Test
