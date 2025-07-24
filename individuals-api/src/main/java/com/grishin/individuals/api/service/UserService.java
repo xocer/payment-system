@@ -4,6 +4,8 @@ import com.grishin.dto.UserInfoResponse;
 import com.grishin.dto.UserLoginRequest;
 import com.grishin.dto.UserRegistrationRequest;
 import com.grishin.individuals.api.client.KeycloakClient;
+import com.grishin.individuals.api.exception.InvalidCredentialsException;
+import com.grishin.individuals.api.exception.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

@@ -4,6 +4,7 @@ import com.grishin.dto.TokenInfo;
 import com.grishin.dto.TokenRefreshRequest;
 import com.grishin.dto.UserLoginRequest;
 import com.grishin.individuals.api.client.KeycloakClient;
+import com.grishin.individuals.api.exception.InvalidRefreshTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
