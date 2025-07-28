@@ -6,11 +6,3 @@ keycloak:
     password: password
     clientCredentials: client_credentials
     refreshToken: refresh_token
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: "*"
-logging:
-  level:
-    org.springframework.boot.context.config: DEBUG
