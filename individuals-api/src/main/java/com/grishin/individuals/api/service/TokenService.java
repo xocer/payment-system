@@ -2,19 +2,17 @@ package com.grishin.individuals.api.service;
 
 import com.grishin.dto.TokenInfo;
 import com.grishin.dto.TokenRefreshRequest;
+import com.grishin.dto.TokenResponse;
 import com.grishin.dto.UserLoginRequest;
 import com.grishin.individuals.api.client.KeycloakClient;
 import com.grishin.individuals.api.exception.InvalidRefreshTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -35,35 +33,20 @@ public class TokenService {
                 .flatMap(this::handleToken);
     }
 
-    public Mono<ResponseEntity<?>> refreshToken(TokenRefreshRequest request) {
+    public Mono<TokenResponse> refreshToken(TokenRefreshRequest request) {
         return keycloakClient.refreshToken(request)
                 .onErrorMap(_ -> new InvalidRefreshTokenException("Недействительный или просроченный refresh token"));
     }
 
-    public List<String> getRoles(Claims claims) {
-        Map<String, Object> resourceAccess = (Map<String, Object>) claims.get("resource_access", Map.class);
-        if (resourceAccess == null) {
-            return List.of();
-        }
-
-        Map<String, Object> account = (Map<String, Object>) resourceAccess.get("account");
-        if (account == null) {
-            return List.of();
-        }
-
-        List<String> roles = (List<String>) account.get("roles");
-        return roles != null ? roles : List.of();
+    public Mono<TokenResponse> getTokenResponse(String email, String password) {
+        return keycloakClient.login(new UserLoginRequest().email(email).password(password));
     }
 
-    public Claims getClaims(String token) {
+    private Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .build()
                 .parseClaimsJwt(extractUnsignedJwt(token))
                 .getBody();
-    }
-
-    public Mono<ResponseEntity<?>> getTokenResponse(String email, String password) {
-        return keycloakClient.login(new UserLoginRequest().email(email).password(password));
     }
 
     private boolean isTokenExpired(TokenInfo token) {

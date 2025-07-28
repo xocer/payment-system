@@ -66,7 +66,7 @@ public class KeycloakClient {
                 .mapNotNull(TokenResponse::getAccessToken);
     }
 
-    public Mono<ResponseEntity<?>> login(UserLoginRequest request) {
+    public Mono<TokenResponse> login(UserLoginRequest request) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add(KeycloakRequestParam.CLIENT_ID.getKey(), props.getClientId());
         formData.add(KeycloakRequestParam.CLIENT_SECRET.getKey(), props.getClientSecret());
@@ -79,11 +79,10 @@ public class KeycloakClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromFormData(formData))
                 .retrieve()
-                .bodyToMono(TokenResponse.class)
-                .map(ResponseEntity::ok);
+                .bodyToMono(TokenResponse.class);
     }
 
-    public Mono<ResponseEntity<?>> refreshToken(TokenRefreshRequest request) {
+    public Mono<TokenResponse> refreshToken(TokenRefreshRequest request) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add(KeycloakRequestParam.CLIENT_ID.getKey(), props.getClientId());
         formData.add(KeycloakRequestParam.CLIENT_SECRET.getKey(), props.getClientSecret());
@@ -95,14 +94,13 @@ public class KeycloakClient {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(formData))
                 .retrieve()
-                .bodyToMono(TokenResponse.class)
-                .map(ResponseEntity::ok);
+                .bodyToMono(TokenResponse.class);
     }
 
-    public Mono<UserInfoKeycloakResponse> getUserInfo(String token) {
+    public Mono<UserInfoKeycloakResponse> getUserInfo(String clientToken, String userId) {
         return webClient.get()
-                .uri(getUserInfoEndpoint())
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .uri(getUserInfoEndpoint(userId))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
                 .retrieve()
                 .bodyToMono(UserInfoKeycloakResponse.class);
     }
@@ -111,8 +109,8 @@ public class KeycloakClient {
         return String.format("%s/realms/%s/protocol/openid-connect/token", props.getBaseUrl(), props.getRealm());
     }
 
-    private String getUserInfoEndpoint() {
-        return String.format("%s/realms/%s/protocol/openid-connect/userinfo", props.getBaseUrl(), props.getRealm());
+    private String getUserInfoEndpoint(String userId) {
+        return String.format("%s/admin/realms/%s/users/%s", props.getBaseUrl(), props.getRealm(), userId);
     }
 
     private String getAdminUsersEndpoint() {
