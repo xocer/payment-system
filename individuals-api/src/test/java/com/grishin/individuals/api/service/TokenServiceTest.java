@@ -34,7 +34,7 @@ class TokenServiceTest {
         //given
         var request = new TokenRefreshRequest();
         BDDMockito.given(keycloakClient.refreshToken(any(TokenRefreshRequest.class)))
-                .willReturn(Mono.just(ResponseEntity.ok(new TokenResponse())));
+                .willReturn(Mono.just(new TokenResponse()));
 
         // when
         tokenService.refreshToken(new TokenRefreshRequest()).block();

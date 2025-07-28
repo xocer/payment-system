@@ -12,12 +12,9 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,16 +42,15 @@ class UserServiceTest {
         BDDMockito.given(tokenService.getClientToken())
                 .willReturn(Mono.just(mockedToken));
         BDDMockito.given(tokenService.getTokenResponse(any(String.class), any(String.class)))
-                .willReturn(Mono.just(ResponseEntity.ok(mockTokenResponse)));
+                .willReturn(Mono.just(mockTokenResponse));
         BDDMockito.given(keycloakClient.registerUser(userRegistrationRequest, mockedToken))
                 .willReturn(Mono.empty());
 
         //when
-        ResponseEntity<?> response = userService.register(userRegistrationRequest).block();
+        var response = userService.register(userRegistrationRequest).block();
 
         //then
         assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(keycloakClient, times(1)).registerUser(userRegistrationRequest, mockedToken);
     }
 
@@ -64,7 +60,7 @@ class UserServiceTest {
         //given
         var userLoginRequest = new UserLoginRequest();
         BDDMockito.given(keycloakClient.login(userLoginRequest))
-                .willReturn(Mono.just(ResponseEntity.ok(new TokenResponse())));
+                .willReturn(Mono.just(new TokenResponse()));
 
         //when
         var response = keycloakClient.login(userLoginRequest).block();
@@ -79,20 +75,21 @@ class UserServiceTest {
     void givenToken_whenGetUserInfo_thenGetUserInfoIsCalledOnce() {
         //given
         var mockedToken = "mocked-token";
+        var mockedUserId = "mockedUserId";
         var userInfoResponse = new UserInfoKeycloakResponse(
                 "sub-id",
                 "test@email.com",
-                List.of("mock"),
-                LocalDateTime.now()
+                Map.of("mock", true),
+                123456789L
         );
-        BDDMockito.given(keycloakClient.getUserInfo(mockedToken))
+        BDDMockito.given(keycloakClient.getUserInfo(mockedToken, mockedUserId))
                 .willReturn(Mono.just(userInfoResponse));
 
         //when
-        var response = keycloakClient.getUserInfo(mockedToken).block();
+        var response = keycloakClient.getUserInfo(mockedToken, mockedUserId).block();
 
         //then
         assertThat(response).isNotNull();
-        verify(keycloakClient, times(1)).getUserInfo(mockedToken);
+        verify(keycloakClient, times(1)).getUserInfo(mockedToken, mockedUserId);
     }
 }
