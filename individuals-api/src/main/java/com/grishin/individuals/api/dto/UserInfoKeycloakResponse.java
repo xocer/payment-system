@@ -1,7 +1,6 @@
 package com.grishin.individuals.api.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 
-public record UserInfoKeycloakResponse(String sub, String email, List<String> roles, LocalDateTime createdAt) {
+public record UserInfoKeycloakResponse(String id, String email, Map<String, Boolean> access, Long createdTimestamp) {
 }
