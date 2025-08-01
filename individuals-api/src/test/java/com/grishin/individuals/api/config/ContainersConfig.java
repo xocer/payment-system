@@ -47,6 +47,6 @@ public class ContainersConfig {
         registry.add("spring.datasource.password", POSTGRES::getPassword);
         registry.add("keycloak.base-url", KEYCLOAK::getAuthServerUrl);
         registry.add("spring.security.oauth2.resourceserver.jwt.issuer-uri",
-                () -> KEYCLOAK.getAuthServerUrl() + "/realms/payment-system/protocol/openid-connect/certs");
+                () -> KEYCLOAK.getAuthServerUrl() + "/realms/payment-system");
     }
 }

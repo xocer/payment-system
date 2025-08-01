@@ -1,0 +1,130 @@
+{
+	"info": {
+		"_postman_id": "be8d4dbc-7cb9-4b36-8c85-5b92bbaff231",
+		"name": "docker payment system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43494185",
+		"_collection_link": "https://vitamin9292-8197277.postman.co/workspace/vitamin9292's-Workspace~a6bc9afe-16c4-4247-88d6-2cbc4c57d84a/collection/43494185-be8d4dbc-7cb9-4b36-8c85-5b92bbaff231?action=share&source=collection_link&creator=43494185"
+	},
+	"item": [
+		{
+			"name": "Client token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"petrov2@mail.com\",\n  \"email\": \"petrov2@mail.com\",\n  \"firstName\": \"Misha\",\n  \"lastName\": \"Petrov\",\n  \"password\": \"mypassword\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/auth/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"petrov2@mail.com\",\n  \"password\": \"mypassword\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"refresh_token\": \"eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI4MWUzMDM2ZS05ZTdhLTRhODYtYTQ0YS01ZmZjMDg2N2VmYjEifQ.eyJleHAiOjE3NTE3MjE2ODYsImlhdCI6MTc1MTcxOTg4NiwianRpIjoiM2RhMmE5YmUtMTEyZi00MDBkLTg3YzQtM2EwYWQ5NzdkNGU3IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4OTgwL3JlYWxtcy9wYXltZW50LXN5c3RlbSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODk4MC9yZWFsbXMvcGF5bWVudC1zeXN0ZW0iLCJzdWIiOiI0MGUwZWJiYy1iNTc2LTQwMjQtODYxZS1hNmZlMDE5ODA4ZjMiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoiaW5kaXZpZHVhbHMtYXBpIiwic2lkIjoiZTdlOGQ5YzktNmFmMC00NmZkLWJjZjQtZWExMWQ5YmJkYzBhIiwic2NvcGUiOiJvcGVuaWQgd2ViLW9yaWdpbnMgc2VydmljZV9hY2NvdW50IGFjciByb2xlcyBlbWFpbCBiYXNpYyBwcm9maWxlIn0.4Vp-fjHsuCahwT0RmVfRdyg9-T9EmN8AkFgxzOpfExYZXOWJGVvn2NXcj9sSRbvO_taYSNWiEUXXawkw7mJajg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/auth/refresh-token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"auth",
+						"refresh-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User info",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtNjlSeGt4ZlZUdElFM1JjbWxkUFFqVVhfZV9fRGpWR0FMMlZwcy1sSks0In0.eyJleHAiOjE3NTM5MDM3MTgsImlhdCI6MTc1MzkwMzQxOCwianRpIjoib25ydHJvOmIwYzAxMTU4LWM2NmYtNDcyOS05MjA0LTg4ZDZiMzg0YTY3MSIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODk4MC9yZWFsbXMvcGF5bWVudC1zeXN0ZW0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNGFiNzEzZmMtZmQxNy00NTk1LTg0NDEtNTIyNTVmNzllYTAxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaW5kaXZpZHVhbHMtYXBpIiwic2lkIjoiMmE5OTA2N2UtYjMwYi00ZDkyLTgxODItM2M3ODZhMjJlYzlhIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8va2V5Y2xvYWs6ODk4MCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1wYXltZW50LXN5c3RlbSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJNaXNoYSBQZXRyb3YiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJwZXRyb3YyMzFAbWFpbC5jb20iLCJnaXZlbl9uYW1lIjoiTWlzaGEiLCJmYW1pbHlfbmFtZSI6IlBldHJvdiIsImVtYWlsIjoicGV0cm92MjMxQG1haWwuY29tIn0.aUAGvAi4kIBi0mKVAeTRr_i-XMQt9lzUeMutTIEA1Ap3TcfPE0bvxUwOr0L9XKmPa3gr1n4yHJLBe6w6jBIssuCp0VGBB1P6XatdcJTGB_kHjQNHkUIB7Ho3NmKjxj8OlI6i02pOTBpNuUJIhbm-7U1fyiTYjYSrKr-_PyDueP72qj3dAOzQBaYCe_nGe7DNUas6VLDahwYxBQ9CYizYn445S2dEfiuqziW4T-cFQeAVW6gU7VgOO7b2DRs5m37T2D9ePpQ6B8K4H6uoEhcVEKn5zIsmUr0mmRXJAMLH-sAofNFmObd7hASObsnD5dHHVUAlA1vGCDeJhvBGFjuTlw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/v1/auth/me",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"auth",
+						"me"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

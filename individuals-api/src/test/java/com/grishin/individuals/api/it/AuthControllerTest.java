@@ -51,7 +51,7 @@ class AuthControllerTest {
                 .exchange();
 
         //then
-        result.expectStatus().isOk();
+        result.expectStatus().isCreated();
 
         var tokenResponse = result.expectBody(TokenResponse.class)
                 .returnResult()
@@ -218,7 +218,7 @@ class AuthControllerTest {
                 .exchange();
 
         //then
-        result.expectStatus().isOk();
+        result.expectStatus().isCreated();
         refreshTokenResult
                 .expectStatus().isOk()
                 .expectBody(TokenResponse.class)
@@ -267,7 +267,7 @@ class AuthControllerTest {
                 .exchange();
 
         //then
-        result.expectStatus().isOk();
+        result.expectStatus().isCreated();
 
         var tokenResponse = result.expectBody(TokenResponse.class)
                 .returnResult()
