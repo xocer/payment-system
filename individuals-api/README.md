@@ -17,6 +17,12 @@ Individuals API — микросервис в монорепозитории, в
 
 ### IndividualsApi (`localhost:8080`)
 
+### Postman коллекция
+Коллекция запросов для тестирования API доступна в [postman/individuals_api.json](postman/individuals_api.json).
+Импортируйте файл в Postman и выполните запросы к individuals-api.
+
+Так же можно выполнить запрос через терминал:
+
 #### Post `/v1/auth/register`
 Регистрация нового пользователя
 
