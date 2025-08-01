@@ -5,11 +5,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8980/realms/payment-system
+          issuer-uri: http://${KEYCLOAK_HOST:localhost:8980}/realms/payment-system
 server:
   port: 8080
 keycloak:
-  base-url: http://localhost:8980
+  base-url: http://${KEYCLOAK_HOST:localhost:8980}
   realm: payment-system
   client-id: individuals-api
   client-secret: "6Yh4GuJpOJeCMfAMYGFVjksElXKwpM3y"

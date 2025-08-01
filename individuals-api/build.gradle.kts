@@ -67,9 +67,8 @@ dependencies {
 
 openApiGenerate {
     generatorName.set("java")
-    inputSpec.set("$rootDir/individuals-api/openapi/individuals-api.yaml") // need for local start
-//    inputSpec.set("openapi/individuals-api.yaml") // need for docker start
-    outputDir.set("$buildDir/generated-sources/openapi")
+    inputSpec.set("$rootDir/openapi/individuals-api.yaml")
+    outputDir.set(layout.buildDirectory.dir("generated-sources/openapi").get().asFile.absolutePath)
     apiPackage.set("com.grishin.api")
     modelPackage.set("com.grishin.dto")
     configOptions.set(mapOf(
@@ -84,7 +83,7 @@ openApiGenerate {
 sourceSets {
     named("main") {
         java {
-            srcDir("$buildDir/generated-sources/openapi/src/main/java")
+            srcDir(layout.buildDirectory.dir("generated-sources/openapi/src/main/java").get().asFile.absolutePath)
         }
     }
 }
