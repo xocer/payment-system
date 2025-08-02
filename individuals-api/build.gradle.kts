@@ -48,6 +48,8 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:${version("testcontainersPostgresqlVersion")}")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+    implementation("net.logstash.logback:logstash-logback-encoder:${version("logstashVersion")}")
+
     implementation("io.jsonwebtoken:jjwt-api:${version("jjwtApiVersion")}")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:${version("jjwtImplVersion")}")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:${version("jjwtJacksonVersion")}")

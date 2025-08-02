@@ -12,7 +12,7 @@ keycloak:
   base-url: http://${KEYCLOAK_HOST:localhost:8980}
   realm: payment-system
   client-id: individuals-api
-  client-secret: "6Yh4GuJpOJeCMfAMYGFVjksElXKwpM3y"
+  client-secret: "5hX4NCeHNhQf7tIqd7DRyGbE9ucpa2xF"
   credential-type:
     password: password
     clientCredentials: client_credentials

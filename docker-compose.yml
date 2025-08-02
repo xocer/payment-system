@@ -36,22 +36,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    healthcheck:
-#      test: [ "CMD-SHELL", "wget", "--spider", "http://localhost:8980/health/live" ]
-      test: ["CMD-SHELL", "curl -f http://localhost:8980/health/ready || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
 
   individuals-api:
     build: ./individuals-api
     container_name: individuals-api
-    depends_on:
-      keycloak:
-        condition: service_healthy
-#      prometheus:
-#        condition: service_healthy
-#      loki:
+#    depends_on:
+#      keycloak:
 #        condition: service_healthy
     ports:
       - "8080:8080"
@@ -71,43 +61,57 @@ services:
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     healthcheck:
-      test: [ "CMD-SHELL", "wget", "--spider", "http://localhost:9090/-/healthy" ]
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:9090/-/ready" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
-#  loki:
-#    image: grafana/loki:2.9.2
-#    container_name: loki
-#    ports:
-#      - "3100:3100"
-#    command: -config.file=/etc/loki/local-config.yaml
-#    volumes:
-#      - ./loki/loki-config.yaml:/etc/loki/local-config.yaml
-#    healthcheck:
-#      test: [ "CMD", "wget", "--spider", "http://localhost:3100/ready" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#
-#  grafana:
-#    image: grafana/grafana-oss:latest
-#    container_name: grafana
-#    ports:
-#      - "3000:3000"
-#    environment:
-#      - GF_SECURITY_ADMIN_USER=admin
-#      - GF_SECURITY_ADMIN_PASSWORD=admin
-#    depends_on:
-#      prometheus:
-#        condition: service_healthy
-#      loki:
-#        condition: service_healthy
-#    volumes:
-#      - ./grafana/provisioning:/etc/grafana/provisioning
-#      - ./grafana/dashboards:/var/lib/grafana/dashboards
-#    healthcheck:
-#      test: [ "CMD", "wget", "--spider", "http://localhost:3000/api/health" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
+  loki:
+    image: grafana/loki:2.9.2
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki/loki-config.yaml:/etc/loki/local-config.yaml
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "http://localhost:3100/ready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    user: root
+    ports:
+      - "9080:9080"
+    volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/log:/var/log:ro
+    environment:
+      GRAFANA_LOKI_URL: http://loki:3100/loki/api/v1/push
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:9080
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5

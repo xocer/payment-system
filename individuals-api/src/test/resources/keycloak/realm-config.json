@@ -26,7 +26,7 @@
   "oauth2DeviceCodeLifespan": 600,
   "oauth2DevicePollingInterval": 5,
   "enabled": true,
-  "sslRequired": "external",
+  "sslRequired": "none",
   "registrationAllowed": false,
   "registrationEmailAsUsername": false,
   "rememberMe": false,
@@ -716,7 +716,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "6Yh4GuJpOJeCMfAMYGFVjksElXKwpM3y",
+      "secret": "5hX4NCeHNhQf7tIqd7DRyGbE9ucpa2xF",
       "redirectUris": [
         "http://localhost:8980"
       ],
