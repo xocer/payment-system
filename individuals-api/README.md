@@ -72,8 +72,6 @@ curl -X GET "http://localhost:8080/v1/auth/me" \
 ---
 
 ## Быстрый старт через Docker Compose
-В build.gradle.kts в разделе openApiGenerator нужно выставить `inputSpec.set("openapi/individuals-api.yaml")` и 
-закомментировать `inputSpec.set("$rootDir/individuals-api/openapi/individuals-api.yaml")`
 ```bash
 docker compose up --build -d
 ```
@@ -84,15 +82,6 @@ docker compose up --build -d
 - IndividualsApi (`localhost:8080`)
 - Prometheus (`localhost:9090`)
 - Grafana (`localhost:3000`)
-
-## Проверка
-
-Получение токена от `eventapp`:
-```bash
-curl -X POST   http://localhost:9090/realms/proselyte/protocol/openid-connect/token \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'grant_type=client_credentials&client_id=eventapp&client_secret=<your-secret>'
-```
 
 ---
 

@@ -21,7 +21,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: health,info,prometheus
+  endpoint:
+    prometheus:
+      access: read_only
 logging:
   level:
     org.springframework.boot.context.config: DEBUG
