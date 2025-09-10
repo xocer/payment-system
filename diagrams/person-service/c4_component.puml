@@ -1,0 +1,16 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container(personContainer, "person-service", "Spring Boot")
+
+Component(personController, "PersonController", "REST Controller", "Обрабатывает HTTP-запросы клиента")
+Component(personService, "PersonService", "Сервис", "Работа с данными пользователя (CRUD)")
+Component(personRepository, "PersonRepository", "Репозиторий", "Доступ к данным (JPA)")
+Component(personPostgres, "PersonPostgres", "PostgreSQL", "Адаптер к БД")
+Component(dto, "DTO (сгенерированные)", "OpenAPI DTO", "Сгенерированные модели запросов/ответов")
+
+Rel(personController, personService, "вызов")
+Rel(personService, personRepository, "вызов")
+Rel(personRepository, personPostgres, "вызов")
+Rel(personController, dto, "использует")
+@enduml

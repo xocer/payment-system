@@ -1,0 +1,35 @@
+@startuml
+actor Client
+participant API
+participant DB
+
+Client -> API: POST /v1/persons
+API -> DB: Create Person
+DB --> API: id
+API --> Client: 200 (id)
+
+Client -> API: GET /v1/persons
+API -> DB: Find persons
+DB --> API: [] persons
+API --> Client: 200 [] persons
+
+Client -> API: GET /v1/persons/{id}
+API -> DB: Find person by id
+DB --> API: person
+API --> Client: 200 Person
+
+Client -> API: PUT v1/persons/{id}
+API -> DB: Update person by id
+DB --> API: id
+API --> Client: 200 (id)
+
+Client -> API: DELETE /v1/persons/{id}
+API -> DB: Soft delete (isActive=false)
+DB --> API: OK
+API --> Client: 200
+
+Client -> API: DELETE /v1/persons/compensate-registration/{id}
+API -> DB: Hard delete person
+DB --> API: OK
+API --> Client: 200
+@enduml
